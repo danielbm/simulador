@@ -40,19 +40,28 @@ function App() {
 
   const formik = useFormik({
     initialValues: {
-      valorImovel: 600000,
-      valorAluguel: 2300,
+      valorImovel: 500000,
+      valorAluguel: 2000,
       inflacao: 0.0398,
       selic: 0.071,
-      valorizacao: 0,
+      valorizacao: 0.0389,
       tempo: 10,
-      itbi: 0,
+      itbi: 0.03,
       entrada: 200000,
       sfh: 0.088
     },
     onSubmit: values => {
       alert(JSON.stringify(values, null, 2));
     },
+    validate: values => {
+      const errors = {};
+      if (!values.valorImovel) {
+        errors.valorImovel = 'Campo obrigatório';
+      } else if (!values.tempo) {
+        errors.tempo = 'Campo obrigatório';
+      }
+      return errors;
+    }
   });
 
   return (
@@ -62,7 +71,7 @@ function App() {
       <Card className={classes.card}>
         <CardContent>
           <form onSubmit={formik.handleSubmit} className={classes.formContainer}>
-            <Box>
+            <Box py={2}>
               <Typography align="center"> Dados do imóvel </Typography>
               <Box display="flex" justifyContent="space-around" flexWrap="wrap">
                 <TextField className={classes.textField} label="Valor do imóvel" type="text" name="valorImovel" value={formik.values.valorImovel} onChange={formik.handleChange} />
@@ -70,7 +79,7 @@ function App() {
                 <TextField className={classes.textField} label="Valorização/Depreciação" type="text" name="valorizacao" value={formik.values.valorizacao} onChange={formik.handleChange} /> 
               </Box>
             </Box>
-            <Box>
+            <Box borderTop={1} borderColor="#ccc" py={2}>
               <Typography align="center"> Premissas </Typography>
               <Box display="flex" justifyContent="space-around" flexWrap="wrap">
                 <TextField className={classes.textField} label="Inflação" type="text" name="inflacao" value={formik.values.inflacao} onChange={formik.handleChange} />
@@ -78,7 +87,7 @@ function App() {
                 <TextField className={classes.textField} label="ITBI" type="text" name="itbi" value={formik.values.itbi} onChange={formik.handleChange} />
               </Box>
             </Box>
-            <Box>
+            <Box borderTop={1} borderColor="#ccc" py={2}>
               <Typography align="center"> Financiamento </Typography>
               <Box display="flex" justifyContent="space-around" flexWrap="wrap">
                 <TextField className={classes.textField} label="Entrada" type="text" name="entrada" value={formik.values.entrada} onChange={formik.handleChange} />
@@ -103,15 +112,9 @@ function App() {
           <p><a href="http://www8.caixa.gov.br/siopiinternet-web/simulaOperacaoInternet.do?method=inicializarCasoUso">** http://www8.caixa.gov.br/siopiinternet-web/simulaOperacaoInternet.do?method=inicializarCasoUso</a></p>
         </CardContent>
       </Card> */}
-      <Card className={classes.card}>
-        <CardContent>
-          <div className={classes.row}>
             <Results 
               values={formik.values}
             />
-          </div>
-        </CardContent>
-      </Card>
     </Container>
   );
 }

@@ -1,14 +1,18 @@
 import React from "react"
 import Chart from 'react-apexcharts'
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography } from "@material-ui/core";
+import { Typography, Card, CardContent } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   row: {
     display: "flex",
     justifyContent: "space-around",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    marginTop: 10
   },
+  card: {
+    marginTop: 10
+  }
 }));
 
 // const calculateCompra = (valorImovel, inflacao, selic, valorizacao, tempo, investimento, itbi, entrada, sfh) => {
@@ -147,6 +151,9 @@ const generateOptions = (title, line1, line2, xname, data1, data2, categories) =
 
 function Results(props) {
   const classes = useStyles();
+  const formatNumber = (text, style) => {
+    return new Intl.NumberFormat('pt-BR', { style: style, currency: 'BRL'}).format(text)
+  }
 
   let { valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, itbi, entrada, sfh } = props.values
   valorImovel = Number(valorImovel)
@@ -206,17 +213,20 @@ function Results(props) {
 
   return (
     <div className={classes.resultContainer}>
-      <div className={classes.row}>
-        <Typography> Se você der uma entrada de {entrada} reais no imóvel, e financiar por {tempo} anos, você irá pagar {encargosAcumulado} de juros, e terá um patrimônio de <b>{resultadoCompra}</b> reais </Typography>
-        <Typography> Se você investir {entrada} reais, alugar o imóvel por {valorAluguel}, e continuar investindo o restante da renda disponível que usaria no financiamento, em {tempo} anos terá um patrimônio de <b>{resultadoAluguel}</b> reais </Typography>
-      </div>
-      <div className={classes.row} >
+      <Card className={classes.card}>
+        <CardContent>
+          <Typography> Se você der uma entrada de {formatNumber(entrada, 'currency')} no imóvel, e financiar por {tempo} anos, você irá pagar {formatNumber(encargosAcumulado, 'currency')} de juros, e terá um patrimônio de <b>{formatNumber(resultadoCompra, 'currency')}</b> </Typography>
+          <br />
+          <Typography> Se você investir {formatNumber(entrada, 'currency')}, alugar o imóvel por {formatNumber(valorAluguel, 'currency')}, e continuar investindo o restante da renda disponível que usaria no financiamento, em {tempo} anos terá um patrimônio de <b>{formatNumber(resultadoAluguel, 'currency')}</b> reais </Typography>
+        </CardContent>
+      </Card>
+      <Card className={classes.row}>
         <div id="chart">
           <Chart
             options={jurosSeries.options}
             series={jurosSeries.series}
             type="line"
-            width="450"
+            width="50%"
           />
         </div>
         <div id="chart">
@@ -224,7 +234,7 @@ function Results(props) {
             options={inflacaoSeries.options}
             series={inflacaoSeries.series}
             type="line"
-            width="450"
+            width="50%"
           />
         </div>
         <div id="chart">
@@ -232,7 +242,7 @@ function Results(props) {
             options={valorizacaoSeries.options}
             series={valorizacaoSeries.series}
             type="line"
-            width="450"
+            width="50%"
           />
         </div>
         <div id="chart">
@@ -240,7 +250,7 @@ function Results(props) {
             options={valorAluguelSeries.options}
             series={valorAluguelSeries.series}
             type="line"
-            width="450"
+            width="50%"
           />
         </div>
         <div id="chart">
@@ -248,7 +258,7 @@ function Results(props) {
             options={entradaSeries.options}
             series={entradaSeries.series}
             type="line"
-            width="450"
+            width="50%"
           />
         </div>
         <div id="chart">
@@ -256,10 +266,10 @@ function Results(props) {
             options={sfhSeries.options}
             series={sfhSeries.series}
             type="line"
-            width="450"
+            width="50%"
           />
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
