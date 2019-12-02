@@ -31,6 +31,11 @@ const useStyles = makeStyles(theme => ({
   },
   card: {
     marginTop: 10
+  },
+  title: {
+    "font-family": "Bebas Neue",
+    color: "green",
+    fontSize: "3vw"
   }
 }));
 
@@ -67,7 +72,10 @@ function App() {
   return (
     <Container maxWidth="md" minWidth={480} className={classes.main}>
       <CssBaseline />
-      <Typography variant="h4" align="center"> Calculadora do imóvel: comprar ou alugar? </Typography>
+      <Box pt={2}>
+        <Typography className={classes.title} variant="h4" pt={10} align="center" > Calculadora do imóvel: comprar ou alugar? </Typography>
+      </Box>
+      
       <Card className={classes.card}>
         <CardContent>
           <form onSubmit={formik.handleSubmit} className={classes.formContainer}>

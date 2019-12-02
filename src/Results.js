@@ -1,7 +1,7 @@
 import React from "react"
 import Chart from 'react-apexcharts'
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography, Card, CardContent } from "@material-ui/core";
+import { Typography, Card, CardContent, Box } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   row: {
@@ -178,13 +178,13 @@ function Results(props) {
   let sfhData = [[],[],[]]
   
   for (let i=0;i<10;i++) {
-    inflacaoData[0].push(calculateCompra(valorImovel, inflacao, i/100, valorizacao, tempo, investimento, itbi, entrada, sfh)[0])
-    inflacaoData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, i/100, valorizacao, tempo, investimento, entrada, sfh)[0])
-    inflacaoData[2].push(i+'%')
+    jurosData[0].push(calculateCompra(valorImovel, inflacao, i/100+0.04, valorizacao, tempo, investimento, itbi, entrada, sfh)[0])
+    jurosData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, i/100+0.04, valorizacao, tempo, investimento, entrada, sfh)[0])
+    jurosData[2].push(i+4+'%')
 
-    jurosData[0].push(calculateCompra(valorImovel, i/100, selic, valorizacao, tempo, investimento, itbi, entrada, sfh)[0])
-    jurosData[1].push(calculateAluguel(valorImovel, valorAluguel, i/100, selic, valorizacao, tempo, investimento, entrada, sfh)[0])
-    jurosData[2].push(i+'%')
+    inflacaoData[0].push(calculateCompra(valorImovel, i/100, selic, valorizacao, tempo, investimento, itbi, entrada, sfh)[0])
+    inflacaoData[1].push(calculateAluguel(valorImovel, valorAluguel, i/100, selic, valorizacao, tempo, investimento, entrada, sfh)[0])
+    inflacaoData[2].push(i+'%')
 
     valorizacaoData[0].push(calculateCompra(valorImovel, inflacao, selic, i/100, tempo, investimento, itbi, entrada, sfh)[0])
     valorizacaoData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, selic, i/100, tempo, investimento, entrada, sfh)[0])
@@ -198,10 +198,9 @@ function Results(props) {
     entradaData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, i*valorImovel/10, sfh)[0])
     entradaData[2].push(i*valorImovel/10)
 
-    sfhData[0].push(calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento, itbi, entrada, i/100)[0])
+    sfhData[0].push(calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento, itbi, entrada, i/100+0.04)[0])
     sfhData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, entrada, sfh)[0])
-    sfhData[2].push(i+'%')
-
+    sfhData[2].push(i+4+'%')
   }
 
   const jurosSeries = generateOptions("Juros", "Compra", "Aluguel", "Juros (%)", jurosData[0], jurosData[1], jurosData[2])
@@ -215,7 +214,7 @@ function Results(props) {
     <div className={classes.resultContainer}>
       <Card className={classes.card}>
         <CardContent>
-          <Typography> Se você der uma entrada de {formatNumber(entrada, 'currency')} no imóvel, e financiar por {tempo} anos, você irá pagar {formatNumber(encargosAcumulado, 'currency')} de juros, e terá um patrimônio de <b>{formatNumber(resultadoCompra, 'currency')}</b> </Typography>
+          <Typography> Se você der uma entrada de {formatNumber(entrada, 'currency')} no imóvel, e financiar por {tempo} anos, você irá pagar {formatNumber(encargosAcumulado, 'currency')} de juros, e terá um patrimônio de <Box color={resultadoCompra > resultadoAluguel ? "green" : "red"}><b>{formatNumber(resultadoCompra, 'currency')}</b></Box> </Typography>
           <br />
           <Typography> Se você investir {formatNumber(entrada, 'currency')}, alugar o imóvel por {formatNumber(valorAluguel, 'currency')}, e continuar investindo o restante da renda disponível que usaria no financiamento, em {tempo} anos terá um patrimônio de <b>{formatNumber(resultadoAluguel, 'currency')}</b> reais </Typography>
         </CardContent>
@@ -226,7 +225,6 @@ function Results(props) {
             options={jurosSeries.options}
             series={jurosSeries.series}
             type="line"
-            width="50%"
           />
         </div>
         <div id="chart">
@@ -234,7 +232,6 @@ function Results(props) {
             options={inflacaoSeries.options}
             series={inflacaoSeries.series}
             type="line"
-            width="50%"
           />
         </div>
         <div id="chart">
@@ -242,7 +239,6 @@ function Results(props) {
             options={valorizacaoSeries.options}
             series={valorizacaoSeries.series}
             type="line"
-            width="50%"
           />
         </div>
         <div id="chart">
@@ -250,7 +246,6 @@ function Results(props) {
             options={valorAluguelSeries.options}
             series={valorAluguelSeries.series}
             type="line"
-            width="50%"
           />
         </div>
         <div id="chart">
@@ -258,7 +253,6 @@ function Results(props) {
             options={entradaSeries.options}
             series={entradaSeries.series}
             type="line"
-            width="50%"
           />
         </div>
         <div id="chart">
@@ -266,7 +260,6 @@ function Results(props) {
             options={sfhSeries.options}
             series={sfhSeries.series}
             type="line"
-            width="50%"
           />
         </div>
       </Card>
