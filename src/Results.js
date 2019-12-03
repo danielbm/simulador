@@ -12,6 +12,9 @@ const useStyles = makeStyles(theme => ({
   },
   card: {
     marginTop: 10
+  },
+  highlighted: {
+    fontWeight: "bold"
   }
 }));
 
@@ -145,7 +148,7 @@ const generateOptions = (title, line1, line2, xname, data1, data2, categories) =
       }
     ]
   }
-  
+
   return options
 }
 
@@ -176,7 +179,7 @@ function Results(props) {
   let valorAluguelData = [[],[],[]]
   let entradaData = [[],[],[]]
   let sfhData = [[],[],[]]
-  
+
   for (let i=0;i<10;i++) {
     jurosData[0].push(calculateCompra(valorImovel, inflacao, i/100+0.04, valorizacao, tempo, investimento, itbi, entrada, sfh)[0])
     jurosData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, i/100+0.04, valorizacao, tempo, investimento, entrada, sfh)[0])
@@ -214,9 +217,24 @@ function Results(props) {
     <div className={classes.resultContainer}>
       <Card className={classes.card}>
         <CardContent>
-          <Typography> Se você der uma entrada de {formatNumber(entrada, 'currency')} no imóvel, e financiar por {tempo} anos, você irá pagar {formatNumber(encargosAcumulado, 'currency')} de juros, e terá um patrimônio de <Box color={resultadoCompra > resultadoAluguel ? "green" : "red"}><b>{formatNumber(resultadoCompra, 'currency')}</b></Box> </Typography>
+          <Typography>
+            Se você der uma entrada de {formatNumber(entrada, 'currency')} no imóvel,
+            e financiar por {tempo} anos, você irá pagar {formatNumber(encargosAcumulado, 'currency')} de juros,
+            e terá um patrimônio de&nbsp;
+            <span className={classes.highlighted} style={{color: resultadoCompra > resultadoAluguel ? "green" : "red" }}>
+              {formatNumber(resultadoCompra, 'currency')}
+            </span>
+          </Typography>
           <br />
-          <Typography> Se você investir {formatNumber(entrada, 'currency')}, alugar o imóvel por {formatNumber(valorAluguel, 'currency')}, e continuar investindo o restante da renda disponível que usaria no financiamento, em {tempo} anos terá um patrimônio de <b>{formatNumber(resultadoAluguel, 'currency')}</b> reais </Typography>
+          <Typography>
+            Se você alugar o imóvel por {formatNumber(valorAluguel, 'currency')},
+            investir {formatNumber(entrada, 'currency')},
+            e continuar investindo o restante da renda disponível que usaria no financiamento,
+            em {tempo} anos terá um patrimônio de&nbsp;
+            <span className={classes.highlighted} style={{color: resultadoCompra < resultadoAluguel ? "green" : "red" }}>
+              {formatNumber(resultadoAluguel, 'currency')}
+            </span>
+          </Typography>
         </CardContent>
       </Card>
       <Card className={classes.row}>
