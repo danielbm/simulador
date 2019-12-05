@@ -2,10 +2,11 @@ import React from "react";
 import './App.css';
 import Results from './Results.js';
 import { useFormik } from 'formik';
-import { TextField, Button, Container, Card, CardContent,Typography, Box  } from '@material-ui/core'
+import { TextField, Container, Card, CardContent,Typography, Box, InputAdornment, Button  } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+// import useMediaQuery from '@material-ui/core/useMediaQuery';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import _ from 'lodash'
 
 
 const useStyles = makeStyles(theme => ({
@@ -35,25 +36,25 @@ const useStyles = makeStyles(theme => ({
   title: {
     "font-family": "Bebas Neue",
     color: "green",
-    fontSize: "3vw"
+    // fontSize: "3vw"
   }
 }));
 
 function App() {
   const classes = useStyles();
-  const isMobile = useMediaQuery('(max-width:600px)');
+  // const isMobile = useMediaQuery('(max-width:600px)');
 
   const formik = useFormik({
     initialValues: {
       valorImovel: 500000,
       valorAluguel: 2000,
-      inflacao: 0.0398,
-      selic: 0.071,
-      valorizacao: 0.0389,
+      inflacao: 3.98,
+      selic: 7.1,
+      valorizacao: 3.89,
       tempo: 10,
-      itbi: 0.03,
+      itbi: 3.,
       entrada: 200000,
-      sfh: 0.088
+      sfh: 8.8
     },
     onSubmit: values => {
       alert(JSON.stringify(values, null, 2));
@@ -73,36 +74,69 @@ function App() {
     <Container maxWidth="md" minWidth={480} className={classes.main}>
       <CssBaseline />
       <Box pt={2}>
-        <Typography className={classes.title} variant="h4" pt={10} align="center" > Calculadora do imóvel: comprar ou alugar? </Typography>
+        <Typography className={classes.title} variant="h4" pt={10} align="center" > Simulador do imóvel: comprar ou alugar? </Typography>
       </Box>
-      
+
       <Card className={classes.card}>
         <CardContent>
           <form onSubmit={formik.handleSubmit} className={classes.formContainer}>
             <Box py={2}>
               <Typography align="center"> Dados do imóvel </Typography>
               <Box display="flex" justifyContent="space-around" flexWrap="wrap">
-                <TextField className={classes.textField} label="Valor do imóvel" type="text" name="valorImovel" value={formik.values.valorImovel} onChange={formik.handleChange} />
-                <TextField className={classes.textField} label="Valor do aluguel" type="text" name="valorAluguel" value={formik.values.valorAluguel} onChange={formik.handleChange} />
-                <TextField className={classes.textField} label="Valorização/Depreciação" type="text" name="valorizacao" value={formik.values.valorizacao} onChange={formik.handleChange} /> 
+                <TextField
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">R$</InputAdornment>
+                  }}
+                  className={classes.textField} label="Valor do imóvel" type="text" name="valorImovel" value={formik.values.valorImovel} onChange={_.debounce(formik.handleChange)} />
+                <TextField
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">R$</InputAdornment>
+                  }}
+                  className={classes.textField} label="Valor do aluguel" type="text" name="valorAluguel" value={formik.values.valorAluguel} onChange={formik.handleChange} />
+                <TextField
+                  InputProps={{
+                    endAdornment: <InputAdornment position="start">%</InputAdornment>
+                  }}
+                  className={classes.textField} label="Valorização/Depreciação" type="text" name="valorizacao" value={formik.values.valorizacao} onChange={formik.handleChange} />
               </Box>
             </Box>
             <Box borderTop={1} borderColor="#ccc" py={2}>
               <Typography align="center"> Premissas </Typography>
               <Box display="flex" justifyContent="space-around" flexWrap="wrap">
-                <TextField className={classes.textField} label="Inflação" type="text" name="inflacao" value={formik.values.inflacao} onChange={formik.handleChange} />
-                <TextField className={classes.textField} label="Taxa SELIC" type="text" name="selic" value={formik.values.selic} onChange={formik.handleChange} />
-                <TextField className={classes.textField} label="ITBI" type="text" name="itbi" value={formik.values.itbi} onChange={formik.handleChange} />
+                <TextField
+                  InputProps={{
+                    endAdornment: <InputAdornment position="start">%</InputAdornment>
+                  }}
+                  className={classes.textField} label="Inflação" type="text" name="inflacao" value={formik.values.inflacao} onChange={formik.handleChange} />
+                <TextField
+                  InputProps={{
+                    endAdornment: <InputAdornment position="start">%</InputAdornment>
+                  }}
+                  className={classes.textField} label="Taxa SELIC" type="text" name="selic" value={formik.values.selic} onChange={formik.handleChange} />
+                <TextField
+                  InputProps={{
+                    endAdornment: <InputAdornment position="start">%</InputAdornment>
+                  }}
+                  className={classes.textField} label="ITBI" type="text" name="itbi" value={formik.values.itbi} onChange={formik.handleChange} />
               </Box>
             </Box>
             <Box borderTop={1} borderColor="#ccc" py={2}>
               <Typography align="center"> Financiamento </Typography>
               <Box display="flex" justifyContent="space-around" flexWrap="wrap">
-                <TextField className={classes.textField} label="Entrada" type="text" name="entrada" value={formik.values.entrada} onChange={formik.handleChange} />
-                <TextField className={classes.textField} label="Taxa financiamento" type="text" name="sfh" value={formik.values.sfh} onChange={formik.handleChange} />
+                <TextField
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">R$</InputAdornment>
+                  }}
+                  className={classes.textField} label="Entrada" type="text" name="entrada" value={formik.values.entrada} onChange={formik.handleChange} />
+                <TextField
+                  InputProps={{
+                    endAdornment: <InputAdornment position="start">%</InputAdornment>
+                  }}
+                  className={classes.textField} label="Taxa financiamento" type="text" name="sfh" value={formik.values.sfh} onChange={formik.handleChange} />
                 <TextField className={classes.textField} label="Tempo (anos)" type="text" name="tempo" value={formik.values.tempo} onChange={formik.handleChange} />
               </Box>
             </Box>
+            <Button type="submit">Enviar</Button>
           </form>
         </CardContent>
       </Card>
@@ -120,7 +154,7 @@ function App() {
           <p><a href="http://www8.caixa.gov.br/siopiinternet-web/simulaOperacaoInternet.do?method=inicializarCasoUso">** http://www8.caixa.gov.br/siopiinternet-web/simulaOperacaoInternet.do?method=inicializarCasoUso</a></p>
         </CardContent>
       </Card> */}
-            <Results 
+            <Results
               values={formik.values}
             />
     </Container>
