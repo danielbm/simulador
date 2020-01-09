@@ -12,21 +12,26 @@ const useStyles = makeStyles(theme => ({
     flexWrap: "wrap",
     marginTop: 10
   },
+  cards: {
+    display: "flex",
+    flexDirection: "row"
+  },
   card: {
-    marginTop: 10
+    marginTop: 10,
+    flex: 1
   },
   highlighted: {
     fontWeight: "bold"
   }
 }));
 
-// const calculateCompra = (valorImovel, inflacao, selic, valorizacao, tempo, investimento, itbi, entrada, sfh) => {
+// const calculateCompra = (valorImovel, inflacao, selic, valorizacao, tempo, investimento,  entrada, sfh) => {
 //   let vi = valorImovel
 //   let disponivel = investimento*12
 //   let parcelaDevedor = (valorImovel-entrada)/tempo
 //   let saldoDevedor = valorImovel-entrada-parcelaDevedor
 //   let encargos = saldoDevedor*sfh
-//   let inv = disponivel-itbi*valorImovel-encargos-parcelaDevedor
+//   let inv = disponivel-encargos-parcelaDevedor
 //   for (let t = 1; t <= tempo-1; t++) {
 //     disponivel = disponivel*(1+inflacao)
 //     saldoDevedor = saldoDevedor - parcelaDevedor
@@ -37,7 +42,7 @@ const useStyles = makeStyles(theme => ({
 //   return ((vi+inv-saldoDevedor)/Math.pow((1+inflacao),tempo-1)).toFixed(2)
 // }
 
-const calculateCompra = (valorImovel, inflacao, selic, valorizacao, tempo, investimento, itbi, entrada, sfh) => {
+const calculateCompra = (valorImovel, inflacao, selic, valorizacao, tempo, investimento,  entrada, sfh) => {
   let vi = valorImovel
   let parcelaDevedor = (valorImovel-entrada)/tempo
   let saldoDevedor = valorImovel-entrada-parcelaDevedor
@@ -49,7 +54,7 @@ const calculateCompra = (valorImovel, inflacao, selic, valorizacao, tempo, inves
     encargosAcumulado += encargos
   }
   vi = valorImovel*Math.pow(1+valorizacao, tempo-1)
-  return [((vi-saldoDevedor-encargosAcumulado-itbi*valorImovel)/Math.pow((1+inflacao),tempo-1)).toFixed(2), encargosAcumulado]
+  return [((vi)/Math.pow((1+inflacao),tempo-1)).toFixed(2), encargosAcumulado]
 }
 
 const calculateAluguel = (valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, entrada, sfh) => {
@@ -166,7 +171,7 @@ function Results(props) {
     return new Intl.NumberFormat('pt-BR', { style: style, currency: 'BRL'}).format(text)
   }
 
-  let { valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, itbi, entrada, sfh } = props.values
+  let { valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, entrada, sfh } = props.values
   valorImovel = Number(valorImovel)
   valorAluguel = Number(valorAluguel)
   inflacao = Number(inflacao)/100
@@ -174,13 +179,11 @@ function Results(props) {
   valorizacao = Number(valorizacao)/100
   tempo = Number(tempo)
   investimento = Number(investimento)
-  itbi = Number(itbi)/100
   entrada = Number(entrada)
   sfh = Number(sfh)/100
-
   // console.log(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento)
 
-  const [resultadoCompra,encargosAcumulado] = calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento, itbi, entrada, sfh)
+  const [resultadoCompra,encargosAcumulado] = calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento,  entrada, sfh)
   const [resultadoAluguel,aluguelAcumulado] = calculateAluguel(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, entrada, sfh)
 
   let inflacaoData = [[],[],[]]
@@ -191,27 +194,27 @@ function Results(props) {
   let sfhData = [[],[],[]]
 
   for (let i=0;i<10;i++) {
-    jurosData[0].push(calculateCompra(valorImovel, inflacao, i/100+0.04, valorizacao, tempo, investimento, itbi, entrada, sfh)[0])
+    jurosData[0].push(calculateCompra(valorImovel, inflacao, i/100+0.04, valorizacao, tempo, investimento,  entrada, sfh)[0])
     jurosData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, i/100+0.04, valorizacao, tempo, investimento, entrada, sfh)[0])
     jurosData[2].push(i+4+'%')
 
-    inflacaoData[0].push(calculateCompra(valorImovel, i/100, selic, valorizacao, tempo, investimento, itbi, entrada, sfh)[0])
+    inflacaoData[0].push(calculateCompra(valorImovel, i/100, selic, valorizacao, tempo, investimento,  entrada, sfh)[0])
     inflacaoData[1].push(calculateAluguel(valorImovel, valorAluguel, i/100, selic, valorizacao, tempo, investimento, entrada, sfh)[0])
     inflacaoData[2].push(i+'%')
 
-    valorizacaoData[0].push(calculateCompra(valorImovel, inflacao, selic, i/100, tempo, investimento, itbi, entrada, sfh)[0])
+    valorizacaoData[0].push(calculateCompra(valorImovel, inflacao, selic, i/100, tempo, investimento,  entrada, sfh)[0])
     valorizacaoData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, selic, i/100, tempo, investimento, entrada, sfh)[0])
     valorizacaoData[2].push(i+'%')
 
-    valorAluguelData[0].push(calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento, itbi, entrada, sfh)[0])
+    valorAluguelData[0].push(calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento,  entrada, sfh)[0])
     valorAluguelData[1].push(calculateAluguel(valorImovel, -400+100*i+valorAluguel, inflacao, selic, valorizacao, tempo, investimento, entrada, sfh)[0])
     valorAluguelData[2].push(-400+100*i+valorAluguel)
 
-    entradaData[0].push(calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento, itbi, i*valorImovel/10, sfh)[0])
+    entradaData[0].push(calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento,  i*valorImovel/10, sfh)[0])
     entradaData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, i*valorImovel/10, sfh)[0])
     entradaData[2].push(i*valorImovel/10)
 
-    sfhData[0].push(calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento, itbi, entrada, i/100+0.04)[0])
+    sfhData[0].push(calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento,  entrada, i/100+0.04)[0])
     sfhData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, entrada, sfh)[0])
     sfhData[2].push(i+4+'%')
   }
@@ -225,28 +228,42 @@ function Results(props) {
 
   return (
     <div className={classes.resultContainer}>
-      <Card className={classes.card}>
-        <CardContent>
-          <Typography>
-            Se você der uma entrada de {formatNumber(entrada, 'currency')} no imóvel,
-            e financiar por {tempo} anos, você irá pagar {formatNumber(encargosAcumulado, 'currency')} de juros,
-            e terá um patrimônio de&nbsp;
-            <span className={classes.highlighted} style={{color: resultadoCompra > resultadoAluguel ? "green" : "red" }}>
-              {formatNumber(resultadoCompra, 'currency')}
-            </span>
-          </Typography>
-          <br />
-          <Typography>
-            Se você alugar o imóvel por {formatNumber(valorAluguel, 'currency')},
-            investir {formatNumber(entrada, 'currency')},
-            e continuar investindo o restante da renda disponível que usaria no financiamento,
-            em {tempo} anos terá um patrimônio de&nbsp;
-            <span className={classes.highlighted} style={{color: resultadoCompra < resultadoAluguel ? "green" : "red" }}>
-              {formatNumber(resultadoAluguel, 'currency')}
-            </span>
-          </Typography>
-        </CardContent>
-      </Card>
+      <div className={classes.cards}>
+        <Card className={classes.card}>
+          <CardContent>
+            <Typography align="center" pt={10}>
+              COMPRA
+            </Typography>
+            <Typography>
+              Juros pago: {formatNumber(encargosAcumulado, 'currency')} <br />
+              Valor imóvel: {formatNumber(valorImovel*Math.pow(1+valorizacao, tempo-1)/Math.pow((1+inflacao),tempo-1), 'currency')} <br />
+
+              Se você der uma entrada de {formatNumber(entrada, 'currency')} no imóvel,
+              e financiar por {tempo} anos, você irá pagar {formatNumber(encargosAcumulado, 'currency')} de juros,
+              e terá um patrimônio de&nbsp;
+              <span className={classes.highlighted} style={{color: resultadoCompra > resultadoAluguel ? "green" : "red" }}>
+                {formatNumber(resultadoCompra, 'currency')}
+              </span>
+            </Typography>
+          </CardContent>
+        </Card>
+        <Card className={classes.card}>
+          <CardContent>
+            <Typography align="center" pt={10}>
+              ALUGUEL
+            </Typography>
+            <Typography>
+              Se você alugar o imóvel por {formatNumber(valorAluguel, 'currency')},
+              investir {formatNumber(entrada, 'currency')},
+              e continuar investindo os {formatNumber(encargosAcumulado, 'currency')} que pagaria de juros do financiamento,
+              em {tempo} anos terá um patrimônio de&nbsp;
+              <span className={classes.highlighted} style={{color: resultadoCompra < resultadoAluguel ? "green" : "red" }}>
+                {formatNumber(resultadoAluguel, 'currency')}
+              </span>
+            </Typography>
+          </CardContent>
+        </Card>
+      </div>
       <Card className={classes.row}>
         <div id="chart">
           <Chart

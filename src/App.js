@@ -2,7 +2,7 @@ import React from "react";
 import './App.css';
 import Results from './Results.js';
 import { useFormik } from 'formik';
-import { TextField, Container, Card, CardContent,Typography, Box, InputAdornment, Button  } from '@material-ui/core'
+import { TextField, Container, Card, CardContent,Typography, Box, InputAdornment, Button, Slider  } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 // import useMediaQuery from '@material-ui/core/useMediaQuery';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -50,9 +50,9 @@ function App() {
       valorAluguel: 2000,
       inflacao: 3.98,
       selic: 7.1,
-      valorizacao: 3.89,
+      valorizacao: 3.98,
       tempo: 10,
-      itbi: 3.,
+      itbi: 0.,
       entrada: 200000,
       sfh: 8.8
     },
@@ -70,6 +70,7 @@ function App() {
     }
   });
 
+  let submittedValues = formik.values
   return (
     <Container maxWidth="md" minWidth={480} className={classes.main}>
       <CssBaseline />
@@ -83,11 +84,20 @@ function App() {
             <Box py={2}>
               <Typography align="center"> Dados do imóvel </Typography>
               <Box display="flex" justifyContent="space-around" flexWrap="wrap">
+                <Slider
+                  value={formik.values.valorImovel}
+                  onChange={formik.handleChange}
+                  aria-labelledby="input-slider"
+                />
                 <TextField
                   InputProps={{
-                    startAdornment: <InputAdornment position="start">R$</InputAdornment>
+                    startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+                    step: 10000,
+                    min: 0,
+                    max: 1000000,
+                    'aria-labelledby': 'input-slider',
                   }}
-                  className={classes.textField} label="Valor do imóvel" type="text" name="valorImovel" value={formik.values.valorImovel} onChange={_.debounce(formik.handleChange)} />
+                  className={classes.textField} label="Valor do imóvel" type="text" name="valorImovel" value={formik.values.valorImovel} onChange={formik.handleChange} />
                 <TextField
                   InputProps={{
                     startAdornment: <InputAdornment position="start">R$</InputAdornment>
@@ -98,11 +108,7 @@ function App() {
                     endAdornment: <InputAdornment position="start">%</InputAdornment>
                   }}
                   className={classes.textField} label="Valorização/Depreciação" type="text" name="valorizacao" value={formik.values.valorizacao} onChange={formik.handleChange} />
-              </Box>
-            </Box>
-            <Box borderTop={1} borderColor="#ccc" py={2}>
-              <Typography align="center"> Premissas </Typography>
-              <Box display="flex" justifyContent="space-around" flexWrap="wrap">
+
                 <TextField
                   InputProps={{
                     endAdornment: <InputAdornment position="start">%</InputAdornment>
@@ -113,16 +119,6 @@ function App() {
                     endAdornment: <InputAdornment position="start">%</InputAdornment>
                   }}
                   className={classes.textField} label="Taxa SELIC" type="text" name="selic" value={formik.values.selic} onChange={formik.handleChange} />
-                <TextField
-                  InputProps={{
-                    endAdornment: <InputAdornment position="start">%</InputAdornment>
-                  }}
-                  className={classes.textField} label="ITBI" type="text" name="itbi" value={formik.values.itbi} onChange={formik.handleChange} />
-              </Box>
-            </Box>
-            <Box borderTop={1} borderColor="#ccc" py={2}>
-              <Typography align="center"> Financiamento </Typography>
-              <Box display="flex" justifyContent="space-around" flexWrap="wrap">
                 <TextField
                   InputProps={{
                     startAdornment: <InputAdornment position="start">R$</InputAdornment>
@@ -155,7 +151,8 @@ function App() {
         </CardContent>
       </Card> */}
             <Results
-              values={formik.values}
+              values={submittedValues}
+              // values={formik.values}
             />
     </Container>
   );
