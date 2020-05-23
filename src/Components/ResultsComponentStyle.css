@@ -1,0 +1,11 @@
+
+
+.desktopChart {
+  width: 50%;
+  float: left;
+}
+
+.mobileChart {
+  width: 100%;
+  margin: auto;
+}
