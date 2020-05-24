@@ -4,6 +4,7 @@ import {DebounceInput} from 'react-debounce-input'
 import './InputPanelComponentStyle.css'
 
 const generateTextField = (startAdornment, endAdornment, label, name, formik) => {
+  //return <DebounceInput debounceTimeout={1000} className="textField" label={label} type="text" name={name} value={formik.values[name]} onChange={formik.handleChange} />
   return (
     <TextField
       InputProps={{

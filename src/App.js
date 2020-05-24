@@ -12,13 +12,13 @@ function App() {
     initialValues: {
       valorImovel: 500000,
       valorAluguel: 2000,
-      inflacao: 3.98,
-      selic: 7.1,
-      valorizacao: 3.98,
+      inflacao: 4,
+      selic: 7,
+      valorizacao: 4,
       tempo: 10,
       itbi: 0.,
       entrada: 200000,
-      sfh: 8.8
+      sfh: 7
     },
     onSubmit: values => {
       alert(JSON.stringify(values, null, 2));
@@ -36,7 +36,10 @@ function App() {
 
   return (
     <div className="App">
-      <div className="header" > Simulador do imóvel: comprar ou alugar? </div>
+      <div className="header" >
+        <h1> Comprar ou alugar? </h1>
+        <p> Faça a simulação das principais variáveis </p>
+      </div>
       <InputPanelComponent formik={formik}/>
       <Results
         values={formik.values}
