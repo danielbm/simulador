@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField, Container, Card, CardContent, InputAdornment } from '@material-ui/core'
+import { TextField, Card, CardContent, InputAdornment } from '@material-ui/core'
 import {DebounceInput} from 'react-debounce-input'
 import './InputPanelComponentStyle.css'
 
@@ -7,8 +7,8 @@ const generateTextField = (startAdornment, endAdornment, label, name, formik) =>
   return (
     <TextField
       InputProps={{
-        startAdornment: <InputAdornment position="start">{startAdornment}</InputAdornment>,
-        endAdornment: <InputAdornment position="start">{endAdornment}</InputAdornment>,
+        startAdornment: startAdornment && <InputAdornment position="start">{startAdornment}</InputAdornment>,
+        endAdornment: endAdornment && <InputAdornment position="start">{endAdornment}</InputAdornment>,
         inputComponent: DebounceInput,
       }}
       inputProps={{
@@ -25,7 +25,6 @@ function InputPanelComponent(props) {
 
   const { formik } = props
 
-  let submittedValues = formik.values
   return (
     <Card>
       <CardContent>

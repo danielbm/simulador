@@ -47,3 +47,7 @@
 .footer a {
   color: white;
 }
+
+.MuiCard-root {
+  margin-top: 10px;
+}

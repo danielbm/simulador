@@ -1,11 +1,21 @@
 
 
-.desktopChart {
+.chart {
   width: 50%;
   float: left;
 }
 
-.mobileChart {
+.chartMobile {
+  width: 100%;
+  margin: auto;
+}
+
+.panel {
+  width: 50%;
+  float: left;
+}
+
+.panelMobile {
   width: 100%;
   margin: auto;
 }

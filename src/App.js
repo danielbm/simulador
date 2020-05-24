@@ -2,7 +2,6 @@ import React from "react";
 import Results from './Components/ResultsComponent.js';
 import InputPanelComponent from './Components/InputPanelComponent.js'
 import { useFormik } from 'formik';
-import CssBaseline from '@material-ui/core/CssBaseline';
 
 import './App.css';
 

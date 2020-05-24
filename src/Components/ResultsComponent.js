@@ -1,30 +1,10 @@
 import React from "react"
 import Chart from 'react-apexcharts'
-import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { Card, CardContent } from "@material-ui/core";
 
-import { Typography, Card, CardContent } from "@material-ui/core";
+import { formatNumber } from '../Helpers/Util.js'
 import './ResultsComponentStyle.css';
-
-const useStyles = makeStyles(theme => ({
-  // row: {
-  //   display: "flex",
-  //   justifyContent: "space-around",
-  //   flexWrap: "wrap",
-  //   marginTop: 10
-  // },
-  // cards: {
-  //   display: "flex",
-  //   flexDirection: "row"
-  // },
-  // card: {
-  //   marginTop: 10,
-  //   flex: 1
-  // },
-  // highlighted: {
-  //   fontWeight: "bold"
-  // }
-}));
 
 // const calculateCompra = (valorImovel, inflacao, selic, valorizacao, tempo, investimento,  entrada, sfh) => {
 //   let vi = valorImovel
@@ -134,12 +114,16 @@ const generateOptions = (title, line1, line2, xname, data1, data2, categories, r
         },
         title: {
           text: xname
-        }
+        },
+
       },
       yaxis: {
         title: {
           text: 'Patrimônio'
         },
+        labels: {
+          formatter: (value) => { return formatNumber(value, "currency").slice(0,-3) },
+        }
       },
       legend: {
         position: 'top',
@@ -170,19 +154,13 @@ const generateChart = (series, isMobile) => {
       options={series.options}
       series={series.series}
       type="line"
-      // width={}
-      className={isMobile ? "mobileChart" : "desktopChart"}
+      className={isMobile ? "chartMobile" : "chart"}
     />
   )
 }
 
 function ResultsComponent(props) {
-  const classes = useStyles();
   const isMobile = useMediaQuery('(max-width:600px)');
-
-  const formatNumber = (text, style) => {
-    return new Intl.NumberFormat('pt-BR', { style: style, currency: 'BRL'}).format(text)
-  }
 
   let { valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, entrada, sfh } = props.values
   valorImovel = Number(valorImovel)
@@ -243,35 +221,35 @@ function ResultsComponent(props) {
     <div>
       <Card>
         <CardContent>
-          <p>
-            COMPRA
-          </p>
-          <p>
-            Juros pago: {formatNumber(encargosAcumulado, 'currency')} <br />
-            Valor imóvel: {formatNumber(valorImovel*Math.pow(1+valorizacao, tempo-1)/Math.pow((1+inflacao),tempo-1), 'currency')} <br />
-            Se você der uma entrada de {formatNumber(entrada, 'currency')} no imóvel,
-            e financiar por {tempo} anos, você irá pagar {formatNumber(encargosAcumulado, 'currency')} de juros,
-            e terá um patrimônio de&nbsp;
-            <span className={classes.highlighted} style={{color: resultadoCompra > resultadoAluguel ? "green" : "red" }}>
-              {formatNumber(resultadoCompra, 'currency')}
-            </span>
-          </p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent>
-          <p>
-            ALUGUEL
-          </p>
-          <p>
-            Se você alugar o imóvel por {formatNumber(valorAluguel, 'currency')},
-            investir {formatNumber(entrada, 'currency')},
-            e continuar investindo os {formatNumber(encargosAcumulado, 'currency')} que pagaria de juros do financiamento,
-            em {tempo} anos terá um patrimônio de&nbsp;
-            <span className={classes.highlighted} style={{color: resultadoCompra < resultadoAluguel ? "green" : "red" }}>
-              {formatNumber(resultadoAluguel, 'currency')}
-            </span>
-          </p>
+          <div className={isMobile ? "panelMobile" : "panel"} >
+            <p>
+              COMPRA
+            </p>
+            <p>
+              Juros pago: {formatNumber(encargosAcumulado, 'currency')} <br />
+              Valor imóvel: {formatNumber(valorImovel*Math.pow(1+valorizacao, tempo-1)/Math.pow((1+inflacao),tempo-1), 'currency')} <br />
+              Se você der uma entrada de {formatNumber(entrada, 'currency')} no imóvel,
+              e financiar por {tempo} anos, você irá pagar {formatNumber(encargosAcumulado, 'currency')} de juros,
+              e terá um patrimônio de&nbsp;
+              <span style={{color: resultadoCompra > resultadoAluguel ? "green" : "red" }}>
+                {formatNumber(resultadoCompra, 'currency')}
+              </span>
+            </p>
+          </div>
+          <div className={isMobile ? "panelMobile" : "panel"} >
+            <p>
+              ALUGUEL
+            </p>
+            <p>
+              Se você alugar o imóvel por {formatNumber(valorAluguel, 'currency')},
+              investir {formatNumber(entrada, 'currency')},
+              e continuar investindo os {formatNumber(encargosAcumulado, 'currency')} que pagaria de juros do financiamento,
+              em {tempo} anos terá um patrimônio de&nbsp;
+              <span style={{color: resultadoCompra < resultadoAluguel ? "green" : "red" }}>
+                {formatNumber(resultadoAluguel, 'currency')}
+              </span>
+            </p>
+          </div>
         </CardContent>
       </Card>
       <Card>
