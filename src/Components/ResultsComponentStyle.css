@@ -22,4 +22,16 @@
 
 .gastos {
   text-align: left;
+  /* border-bottom-width: 1px;
+  border-bottom-style: solid;
+  margin: 0; */
+}
+
+.despesa {
+  text-align: left;
+}
+
+.total {
+  text-align: left;
+  margin: 0;
 }

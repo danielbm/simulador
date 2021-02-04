@@ -1,6 +1,7 @@
 import React from "react";
 import Results from './Components/ResultsComponent.js';
 import InputPanelComponent from './Components/InputPanelComponent.js'
+import { Card, CardContent } from "@material-ui/core";
 import { useFormik } from 'formik';
 
 import './App.css';
@@ -21,7 +22,7 @@ function App() {
       sfh: 7
     },
     onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
+
     },
     validate: values => {
       const errors = {};
@@ -44,6 +45,21 @@ function App() {
       <Results
         values={formik.values}
       />
+      <div className="method">
+        <Card>
+          <CardContent>
+            Metodologia:
+            <ol>
+              <li> Reajuste do aluguel na proporção da valorização do imóvel </li>
+              <li> A diferença entre o valor da parcela do financiamento e o valor do aluguel é investido mensalmente </li>
+              <li> Investimentos rendem a taxa SELIC, com incidência de imposto de renda de 15% sobre os rendimentos </li>
+              <li> Valores padrão baseados na Estrutura a Termo das Taxas de Juros Estimada para 10 anos ( https://www.anbima.com.br/pt_br/informar/curvas-de-juros-fechamento.htm ) </li>
+              <li> Todos valores deflacionados para a moeda de hoje </li>
+            </ol>
+            Estudo completo: 
+          </CardContent>
+        </Card>
+      </div>
       <div className="footer">
         <p> Dúvidas, sugestões e contribuições em: <a href="https://github.com/danielbm/simulador">https://github.com/danielbm/simulador</a> </p>
       </div>
