@@ -5,15 +5,6 @@ import { Card } from "@material-ui/core";
 import { formatNumber } from '../Helpers/Util.js'
 import './ResultsComponentStyle.css';
 
-const igualaAluguel = (resultadoCompra, entrada, aluguelAcumulado, selic, inflacao, tempo) => {
-  // selic = (1+selic)/(1+inflacao)-1
-  //
-  // parcela =
-  // fv = -entrada*Math.pow(1+selic*0.85,tempo)
-  // fv += resultadoCompra
-
-}
-
 const generateOptions = (title, line1, line2, xname, data1, data2, categories, rotate) => {
   let options = {
     options: {
