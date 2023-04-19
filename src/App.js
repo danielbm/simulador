@@ -16,7 +16,7 @@ function App() {
       inflacao: 4,
       selic: 7,
       valorizacao: 4,
-      tempo: 10,
+      tempo: 15,
       itbi: 0.,
       entrada: 200000,
       sfh: 7
@@ -38,9 +38,11 @@ function App() {
   return (
     <div className="App">
       <div className="header" >
-        <h1> Comprar ou alugar? </h1>
-        <p> Faça a simulação das principais variáveis </p>
+        <h1> <span className='compra'>Comprar</span> ou <span className='aluguel'>alugar</span>? </h1>
       </div>
+      {/* <Card style={{backgroundColor: "#"}}>
+        <p> Faça a sua própria simulação </p>
+      </Card> */}
       <InputPanelComponent formik={formik}/>
       <Results
         values={formik.values}
@@ -48,15 +50,16 @@ function App() {
       <div className="method">
         <Card>
           <CardContent>
-            Metodologia:
+            Observações:
             <ol>
               <li> Reajuste do aluguel na proporção da valorização do imóvel </li>
               <li> A diferença entre o valor da parcela do financiamento e o valor do aluguel é investido mensalmente </li>
               <li> Investimentos rendem a taxa SELIC, com incidência de imposto de renda de 15% sobre os rendimentos </li>
               <li> Valores padrão baseados na Estrutura a Termo das Taxas de Juros Estimada para 10 anos ( https://www.anbima.com.br/pt_br/informar/curvas-de-juros-fechamento.htm ) </li>
               <li> Todos valores deflacionados para a moeda de hoje </li>
+              <li> Valores de condomínio e IPTU não são considerados pois assume-se que serão repassados para o locatário, e, portanto, incidem igualmente nas duas opções. </li>
+              <li> Financiamento pelo Sistema de Amortização Constante - SAC </li>
             </ol>
-            Estudo completo: 
           </CardContent>
         </Card>
       </div>

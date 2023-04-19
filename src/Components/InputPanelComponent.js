@@ -1,5 +1,5 @@
 import React, { useState, useEffect }  from "react";
-import { TextField, Card, CardContent, InputAdornment, Switch } from '@material-ui/core'
+import { TextField, Card, CardContent, InputAdornment } from '@material-ui/core'
 import PulseLoader from 'react-spinners/PulseLoader'
 import {DebounceInput} from 'react-debounce-input'
 import './InputPanelComponentStyle.css'
@@ -7,8 +7,7 @@ import { truncate } from '../Helpers/Util.js'
 import axios from 'axios'
 import convert from 'xml-js'
 
-const generateTextField = (startAdornment, endAdornment, label, name, formik, inputSwitch) => {
-  //return <DebounceInput debounceTimeout={1000} className="textField" label={label} type="text" name={name} value={formik.values[name]} onChange={formik.handleChange} />
+const generateTextField = (startAdornment, endAdornment, label, name, formik) => {
   return (
     <TextField
       InputProps={{
@@ -21,7 +20,6 @@ const generateTextField = (startAdornment, endAdornment, label, name, formik, in
       }}
       className="textField" label={label} type="text" name={name} value={formik.values[name]} onChange={formik.handleChange}
       margin="normal"
-      disabled={inputSwitch}
     />
   )
 }
@@ -29,17 +27,23 @@ const generateTextField = (startAdornment, endAdornment, label, name, formik, in
 
 function InputPanelComponent(props) {
   // const isMobile = useMediaQuery('(max-width:600px)');
-  const [inputSwitch, setInputSwitch] = useState(true)
   const [ettj, setEttj] = useState(null)
 
 
   const { formik } = props
-  const defaultInputs = (toggle) => {
+
+  const toggleMortage = (toggle) => {
+    formik.setFieldValue("entrada", formik.values.valorImovel)
+    formik.setFieldValue("tempo", 0)
+  }
+
+  const toggleDefault = (toggle) => {
     formik.setFieldValue("inflacao", ettj[0])
     formik.setFieldValue("selic", ettj[1])
     formik.setFieldValue("sfh", truncate(ettj[1]+2))
     formik.setFieldValue("valorizacao", ettj[0])
-    setInputSwitch(!toggle)
+    formik.setFieldValue("entrada", formik.values.valorImovel)
+    formik.setFieldValue("tempo", 15)
   }
 
   useEffect(() => {
@@ -73,38 +77,43 @@ function InputPanelComponent(props) {
     <Card>
       <CardContent>
         <form onSubmit={formik.handleSubmit}>
-          <p> Dados do imóvel </p>
+          <p> Parâmetros </p>
           <div className="inputContainer">
             {generateTextField("R$", null, "Valor do Imóvel", "valorImovel", formik)}
-            {generateTextField("R$", null, "Valor do Aluguel", "valorAluguel", formik)}
+            {generateTextField("R$", null, "Valor do Aluguel (mensal)", "valorAluguel", formik)}
           </div>
           <div className="inputContainer">
+            {generateTextField(null, "% a.a", "Taxa SELIC", "selic", formik)}
             {generateTextField("R$", null, "Entrada", "entrada", formik)}
-            {generateTextField(null, "anos", "Tempo de financiamento", "tempo", formik)}
-          </div>
-          <p> Condições </p>
-          <div className="switch">
-            <Switch
-              checked={inputSwitch}
-              onChange={() => defaultInputs(inputSwitch)}
-              name="switch"
-              size="small"
-              color="primary"
-              inputProps={{ 'aria-label': 'secondary checkbox' }}
-            /> Utilizar valores padrão
           </div>
           { ettj ? (
           <div className="inputContainer">
-            {generateTextField(null, "% a.a", "Inflação", "inflacao", formik, inputSwitch)}
-            {generateTextField(null, "% a.a", "Taxa SELIC", "selic", formik, inputSwitch)}
+            {generateTextField(null, "% a.a", "Inflação", "inflacao", formik)}
+            {generateTextField(null, "anos", "Tempo de financiamento", "tempo", formik)}
           </div>
           ) : <PulseLoader />}
           { ettj ? (
           <div className="inputContainer">
-            {generateTextField(null, "% a.a", "Valorização", "valorizacao", formik, inputSwitch)}
-            {generateTextField(null, "% a.a", "Taxa Financiamento", "sfh", formik, inputSwitch)}
+            {generateTextField(null, "% a.a", "Valorização do imóvel", "valorizacao", formik)}
+            {generateTextField(null, "% a.a", "Juros do financiamento", "sfh", formik)}
           </div>
         ) : null}
+          {/* <div className="buttonsContainer">
+            <Button
+              onClick={() => toggleMortage()}
+              size="small"
+              color="secondary"
+              variant="outlined"
+              className="button"
+            > Sem financiamento </Button>
+            <Button
+              onClick={() => toggleDefault()}
+              size="small"
+              color="secondary"
+              variant="outlined"
+              mt={10}
+            > Resetar condições </Button>
+          </div> */}
         </form>
       </CardContent>
     </Card>

@@ -1,10 +1,9 @@
 import React from 'react'
 import Chart from 'react-apexcharts'
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Card, CardContent } from "@material-ui/core";
-import { formatNumber, truncate } from '../Helpers/Util.js'
+import { Card } from "@material-ui/core";
+import { formatNumber } from '../Helpers/Util.js'
 import './ResultsComponentStyle.css';
-
 
 const igualaAluguel = (resultadoCompra, entrada, aluguelAcumulado, selic, inflacao, tempo) => {
   // selic = (1+selic)/(1+inflacao)-1
@@ -14,124 +13,6 @@ const igualaAluguel = (resultadoCompra, entrada, aluguelAcumulado, selic, inflac
   // fv += resultadoCompra
 
 }
-const calculateCompra = (valorImovel, inflacao, selic, valorizacao, tempo, investimento,  entrada, sfh) => {
-  // tempo = tempo*12
-  // inflacao = Math.pow(1+inflacao,1/12)-1
-  // selic =  Math.pow(1+selic,1/12)-1
-  // valorizacao =  Math.pow(1+valorizacao,1/12)-1
-  // sfh =  Math.pow(1+sfh,1/12)-1
-  valorizacao = (1+valorizacao)/(1+inflacao)-1
-  sfh = (1+sfh)/(1+inflacao)-1
-
-  let vi = valorImovel
-  let parcelaDevedor = (valorImovel-entrada)/tempo
-  let saldoDevedor = valorImovel-entrada-parcelaDevedor
-  let encargos = saldoDevedor*sfh
-  let encargosAcumulado = encargos
-  for (let t = 1; t <= tempo-1; t++) {
-    saldoDevedor = saldoDevedor - parcelaDevedor
-    encargos = saldoDevedor*sfh
-    encargosAcumulado += encargos
-  }
-  vi = valorImovel*Math.pow(1+valorizacao, tempo-1)
-  return {
-    resultadoCompra: vi.toFixed(2),
-    encargosAcumulado: encargosAcumulado,
-    valorParcela: encargosAcumulado/tempo+(valorImovel-entrada)/tempo
-  }
-}
-
-const calculateAluguel = (valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, entrada, sfh) => {
-  // tempo = tempo*12
-  // inflacao = Math.pow(1+inflacao,1/12)-1
-  // selic =  Math.pow(1+selic,1/12)-1
-  // valorizacao =  Math.pow(1+valorizacao,1/12)-1
-  // sfh =  Math.pow(1+sfh,1/12)-1
-  // valorAluguel = valorAluguel/12
-  selic = (1+selic)/(1+inflacao)-1
-  valorizacao = (1+valorizacao)/(1+inflacao)-1
-  sfh = (1+sfh)/(1+inflacao)-1
-
-  let ir = 0.85
-  let aluguel = valorAluguel*12
-  let parcelaDevedor = (valorImovel-entrada)/tempo
-  let saldoDevedor = valorImovel-entrada-parcelaDevedor
-  let encargos = saldoDevedor*sfh
-  let inv = entrada*(1+selic*ir)-aluguel+parcelaDevedor+encargos
-  let inv2 = 0
-  let aluguelAcumulado = aluguel
-  for (let t = 1; t <= tempo-1; t++) {
-    saldoDevedor = saldoDevedor - parcelaDevedor
-    encargos = saldoDevedor*sfh
-    aluguel = aluguel*(1+valorizacao)
-    inv = inv*(1+selic*ir)-aluguel+parcelaDevedor+encargos
-    inv2 = inv2*(1+selic*ir)
-    aluguelAcumulado += aluguel
-  }
-  return {
-    resultadoAluguel: (inv+inv2).toFixed(2),
-    aluguelAcumulado: aluguelAcumulado,
-    resultadoInvEntrada: inv.toFixed(2),
-    resultadoInvSaldo: inv2.toFixed(2)
-  }
-}
-//
-// const calculateCompra = (valorImovel, inflacao, selic, valorizacao, tempo, investimento,  entrada, sfh) => {
-//   // tempo = tempo*12
-//   // inflacao = Math.pow(1+inflacao,1/12)-1
-//   // selic =  Math.pow(1+selic,1/12)-1
-//   // valorizacao =  Math.pow(1+valorizacao,1/12)-1
-//   // sfh =  Math.pow(1+sfh,1/12)-1
-//
-//   let vi = valorImovel
-//   let parcelaDevedor = (valorImovel-entrada)/tempo
-//   let saldoDevedor = valorImovel-entrada-parcelaDevedor
-//   let encargos = saldoDevedor*sfh
-//   let encargosAcumulado = encargos
-//   for (let t = 1; t <= tempo-1; t++) {
-//     saldoDevedor = saldoDevedor - parcelaDevedor
-//     encargos = saldoDevedor*sfh
-//     encargosAcumulado += encargos/Math.pow((1+inflacao),t)
-//   }
-//   vi = valorImovel*Math.pow(1+valorizacao, tempo-1)
-//   return {
-//     resultadoCompra: ((vi)/Math.pow((1+inflacao),tempo-1)).toFixed(2),
-//     encargosAcumulado: encargosAcumulado,
-//     valorParcela: encargosAcumulado/tempo+(valorImovel-entrada)/tempo
-//   }
-// }
-//
-// const calculateAluguel = (valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, entrada, sfh) => {
-//   // tempo = tempo*12
-//   // inflacao = Math.pow(1+inflacao,1/12)-1
-//   // selic =  Math.pow(1+selic,1/12)-1
-//   // valorizacao =  Math.pow(1+valorizacao,1/12)-1
-//   // sfh =  Math.pow(1+sfh,1/12)-1
-//   // valorAluguel = valorAluguel/12
-//
-//   let ir = 0.85
-//   let aluguel = valorAluguel*12
-//   let parcelaDevedor = (valorImovel-entrada)/tempo
-//   let saldoDevedor = valorImovel-entrada-parcelaDevedor
-//   let encargos = saldoDevedor*sfh
-//   let inv = entrada*(1+selic*ir)-aluguel+parcelaDevedor+encargos
-//   let inv2 = 0
-//   let aluguelAcumulado = aluguel
-//   for (let t = 1; t <= tempo-1; t++) {
-//     saldoDevedor = saldoDevedor - parcelaDevedor
-//     encargos = saldoDevedor*sfh
-//     aluguel = aluguel*(1+valorizacao)
-//     inv = inv*(1+selic*ir)-aluguel+parcelaDevedor+encargos
-//     inv2 = inv2*(1+selic*ir)
-//     aluguelAcumulado += aluguel/Math.pow((1+inflacao),t)
-//   }
-//   return {
-//     resultadoAluguel: ((inv+inv2)/Math.pow((1+inflacao),tempo-1)).toFixed(2),
-//     aluguelAcumulado: aluguelAcumulado,
-//     resultadoInvEntrada: (inv/Math.pow((1+inflacao),tempo-1)).toFixed(2),
-//     resultadoInvSaldo: (inv2/Math.pow((1+inflacao),tempo-1)).toFixed(2)
-//   }
-// }
 
 const generateOptions = (title, line1, line2, xname, data1, data2, categories, rotate) => {
   let options = {
@@ -152,7 +33,7 @@ const generateOptions = (title, line1, line2, xname, data1, data2, categories, r
       tooltip: {
         followCursor: true,
       },
-      colors: ['#77B6EA', '#545454'],
+      colors: ['#20B1DF', '#DF4E20'],
       dataLabels: {
         enabled: false,
       },
@@ -213,6 +94,79 @@ const generateOptions = (title, line1, line2, xname, data1, data2, categories, r
   return options
 }
 
+const calculateResults = (valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, entrada, sfh, tempoInvest) => {
+  valorizacao = (1+valorizacao)/(1+inflacao)-1
+  sfh = (1+sfh)/(1+inflacao)-1
+  selic = (1+selic)/(1+inflacao)-1
+
+  let ir = 0.85
+  let aluguel = valorAluguel*12
+  let vi = valorImovel
+  let parcelaDevedor = (valorImovel-entrada)/tempo
+  let saldoDevedor = valorImovel-entrada
+  let encargos = saldoDevedor*sfh
+  let encargosAcumulado = encargos
+  let inv = entrada*(1+selic*ir)
+  let aluguelAcumulado = 0
+  for (let t = 1; t <= tempoInvest; t++) {
+    if (saldoDevedor > 0) {
+      saldoDevedor = saldoDevedor - parcelaDevedor
+      encargos = saldoDevedor*sfh
+    } else {
+      saldoDevedor = 0
+      encargos = 0
+      parcelaDevedor = 0
+    }
+    
+    encargosAcumulado += encargos
+    aluguel = aluguel*(1+valorizacao)
+    inv = inv*(1+selic*ir)-aluguel
+    inv += (parcelaDevedor+encargos)
+    aluguelAcumulado += aluguel
+    // console.log('Saldo devedor:'+saldoDevedor+' Parcela:'+(parcelaDevedor+encargos)+' Invest:'+inv)
+  }
+  vi = valorImovel*Math.pow(1+valorizacao, tempoInvest-1)
+  return {
+    resultadoCompra: vi.toFixed(2),
+    encargosAcumulado: encargosAcumulado,
+    valorParcela: tempo > 0 ? (encargosAcumulado+valorImovel-entrada)/tempo/12 : 0,
+    resultadoAluguel: (inv).toFixed(2),
+    aluguelAcumulado: aluguelAcumulado,
+  }
+}
+
+// const calculateAluguel = (valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, entrada, sfh) => {
+//   selic = (1+selic)/(1+inflacao)-1
+//   valorizacao = (1+valorizacao)/(1+inflacao)-1
+//   sfh = (1+sfh)/(1+inflacao)-1
+
+//   let tempoInvest = 20
+
+
+//   let ir = 0.85
+//   let aluguel = valorAluguel*12
+//   let parcelaDevedor = (valorImovel-entrada)/tempo
+//   let saldoDevedor = valorImovel-entrada-parcelaDevedor
+//   let encargos = saldoDevedor*sfh
+//   let inv = entrada*(1+selic*ir)-aluguel+parcelaDevedor+encargos
+//   let inv2 = 0
+//   let aluguelAcumulado = aluguel
+//   for (let t = 1; t <= tempoInvest; t++) {
+//     saldoDevedor = saldoDevedor > 0 ? saldoDevedor - parcelaDevedor : 0
+//     encargos = saldoDevedor*sfh
+//     aluguel = aluguel*(1+valorizacao)
+//     inv = inv*(1+selic*ir)-aluguel+parcelaDevedor+encargos
+//     inv2 = inv2*(1+selic*ir)
+//     aluguelAcumulado += aluguel
+//   }
+//   return {
+//     resultadoAluguel: (inv+inv2).toFixed(2),
+//     aluguelAcumulado: aluguelAcumulado,
+//     resultadoInvEntrada: inv.toFixed(2),
+//     resultadoInvSaldo: inv2.toFixed(2)
+//   }
+// }
+
 const generateChart = (series, isMobile) => {
   return (
     <Chart
@@ -227,20 +181,19 @@ const generateChart = (series, isMobile) => {
 function ResultsComponent(props) {
   const isMobile = useMediaQuery('(max-width:600px)');
 
-  let { valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, entrada, sfh } = props.values
+  let { valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, entrada, sfh } = props.values
   valorImovel = Number(valorImovel)
   valorAluguel = Number(valorAluguel)
   inflacao = Number(inflacao)/100
   selic = Number(selic)/100
   valorizacao = Number(valorizacao)/100
   tempo = Number(tempo)
-  investimento = Number(investimento)
   entrada = Number(entrada)
   sfh = Number(sfh)/100
+  let tempoInvest = 20
   // console.log(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento)
 
-  const { resultadoCompra, encargosAcumulado, valorParcela } = calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento,  entrada, sfh)
-  const { resultadoAluguel, aluguelAcumulado, resultadoInvEntrada, resultadoInvSaldo } = calculateAluguel(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, entrada, sfh)
+  const { resultadoCompra, encargosAcumulado, valorParcela, resultadoAluguel, aluguelAcumulado } = calculateResults(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo,  entrada, sfh, tempoInvest)
 
   let inflacaoData = [[],[],[]]
   let jurosData = [[],[],[]]
@@ -249,77 +202,100 @@ function ResultsComponent(props) {
   let entradaData = [[],[],[]]
   let sfhData = [[],[],[]]
 
+  let results = {}
   for (let i=0;i<10;i++) {
-    jurosData[0].push(calculateCompra(valorImovel, inflacao, i/100+0.04, valorizacao, tempo, investimento,  entrada, sfh).resultadoCompra)
-    jurosData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, i/100+0.04, valorizacao, tempo, investimento, entrada, sfh).resultadoAluguel)
+    results = calculateResults(valorImovel, valorAluguel, inflacao, i/100+0.04, valorizacao, tempo,  entrada, sfh, tempoInvest)
+    jurosData[0].push(results.resultadoCompra)
+    jurosData[1].push(results.resultadoAluguel)
     jurosData[2].push(i+4+'%')
 
-    inflacaoData[0].push(calculateCompra(valorImovel, i/100, selic, valorizacao, tempo, investimento,  entrada, sfh).resultadoCompra)
-    inflacaoData[1].push(calculateAluguel(valorImovel, valorAluguel, i/100, selic, valorizacao, tempo, investimento, entrada, sfh).resultadoAluguel)
+    results = calculateResults(valorImovel, valorAluguel, i/100, selic, valorizacao, tempo,  entrada, sfh, tempoInvest)
+    inflacaoData[0].push(results.resultadoCompra)
+    inflacaoData[1].push(results.resultadoAluguel)
     inflacaoData[2].push(i+'%')
 
-    valorizacaoData[0].push(calculateCompra(valorImovel, inflacao, selic, i/100, tempo, investimento,  entrada, sfh).resultadoCompra)
-    valorizacaoData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, selic, i/100, tempo, investimento, entrada, sfh).resultadoAluguel)
+    results = calculateResults(valorImovel, valorAluguel, inflacao, selic, i/100, tempo,  entrada, sfh, tempoInvest)
+    valorizacaoData[0].push(results.resultadoCompra)
+    valorizacaoData[1].push(results.resultadoAluguel)
     valorizacaoData[2].push(i+'%')
 
-    valorAluguelData[0].push(calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento,  entrada, sfh).resultadoCompra)
-    valorAluguelData[1].push(calculateAluguel(valorImovel, -400+100*i+valorAluguel, inflacao, selic, valorizacao, tempo, investimento, entrada, sfh).resultadoAluguel)
+    results = calculateResults(valorImovel, -400+100*i+valorAluguel, inflacao, selic, valorizacao, tempo,  entrada, sfh, tempoInvest)
+    valorAluguelData[0].push(results.resultadoCompra)
+    valorAluguelData[1].push(results.resultadoAluguel)
     valorAluguelData[2].push(-400+100*i+valorAluguel)
 
-    entradaData[0].push(calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento,  i*valorImovel/10, sfh).resultadoCompra)
-    entradaData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, i*valorImovel/10, sfh).resultadoAluguel)
+    results = calculateResults(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo,  i*valorImovel/10, sfh, tempoInvest)
+    entradaData[0].push(results.resultadoCompra)
+    entradaData[1].push(results.resultadoAluguel)
     entradaData[2].push(i*valorImovel/10)
 
-    sfhData[0].push(calculateCompra(valorImovel, inflacao, selic, valorizacao, tempo, investimento,  entrada, i/100+0.04).resultadoCompra)
-    sfhData[1].push(calculateAluguel(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento, entrada, i/100+0.04).resultadoAluguel)
+    results = calculateResults(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo,  entrada, i/100+0.04, tempoInvest)
+    sfhData[0].push(results.resultadoCompra)
+    sfhData[1].push(results.resultadoAluguel)
     sfhData[2].push(i+4+'%')
   }
 
-  const jurosSeries = generateOptions("Juros", "Compra", "Aluguel", "Juros (%)", jurosData[0], jurosData[1], jurosData[2], false)
+  const jurosSeries = generateOptions("SELIC", "Compra", "Aluguel", "Juros (%)", jurosData[0], jurosData[1], jurosData[2], false)
   const inflacaoSeries = generateOptions("Inflação", "Compra", "Aluguel", "Inflação (%)", inflacaoData[0], inflacaoData[1], inflacaoData[2], false)
   const valorizacaoSeries = generateOptions("Valorização/Depreciação", "Compra", "Aluguel", "Valorização/Depreciação (%)", valorizacaoData[0], valorizacaoData[1], valorizacaoData[2], false)
   const valorAluguelSeries = generateOptions("Valor aluguel", "Compra", "Aluguel", "Valor aluguel (R$)", valorAluguelData[0], valorAluguelData[1], valorAluguelData[2], false)
   const entradaSeries = generateOptions("Entrada", "Compra", "Aluguel", "Entrada (R$)", entradaData[0], entradaData[1], entradaData[2], false)
-  const sfhSeries = generateOptions("Taxa Financiamento", "Compra", "Aluguel", "Taxa Financiamento (%)", sfhData[0], sfhData[1], sfhData[2], false)
+  const sfhSeries = generateOptions("Juros Financiamento", "Compra", "Aluguel", "Taxa Financiamento (%)", sfhData[0], sfhData[1], sfhData[2], false)
 
   return (
     <div>
       <Card>
-        <CardContent>
-          <div className={isMobile ? "panelMobile" : "panel"} >
+        <div className="summaryContainer">
           <p>
-            Compra
+            Nestas condições de financiamento, para adquirir este imóvel em {tempo} anos, é necessário 
+            investir <span className='red'>{formatNumber(encargosAcumulado+valorImovel, 'currency')}</span>, ou <span className='red'>{formatNumber(valorParcela, 'currency')}</span> por 
+            mês. Ao final de {tempoInvest} anos 
+            seu patrimônio total seria de <span className='green'>{formatNumber(resultadoCompra, 'currency')}</span>, já considerando a
+            valorização do imóvel e a inflação.
           </p>
-          <p className="despesa"> Despesas </p>
-          <p className="gastos">
-            Entrada: {formatNumber(entrada, 'currency')} <br />
-            Financiamento: {formatNumber(valorImovel-entrada, 'currency')} <br />
-            Juros: {formatNumber(encargosAcumulado, 'currency')} <br />
-            Parcela do financiamento: {formatNumber(valorParcela, 'currency')} <br />
-          </p>
-          <p className="despesa"> Patrimônio </p>
-          <p className="gastos">
-            Imóvel: {formatNumber(resultadoCompra, 'currency')} <br />
-          </p>
-          </div>
-          <div className={isMobile ? "panelMobile" : "panel"} >
           <p>
-            Aluguel
+            Se o mesmo imóvel fosse alugado por <span className='red'>{formatNumber(valorAluguel, 'currency')}</span>, e o restante do
+            dinheiro fosse investido rendendo a taxa SELIC, ao final de {tempoInvest} anos, seu patrimônio
+            total seria de <span className='green'>{formatNumber(resultadoAluguel, 'currency')}</span>.
           </p>
-          <p className="despesa"> Despesas </p>
-          <p className="gastos">
-            Aluguel: {formatNumber(aluguelAcumulado, 'currency')} <br />
-            Valor médio do aluguel: {formatNumber(aluguelAcumulado/tempo/12, 'currency')} ({formatNumber(aluguelAcumulado*100/tempo/valorImovel, 'percentage')})<br />
+        </div>
+        </Card>
+        <Card>
+        <div className='summaryContainer'>
+          <div className={isMobile ? "panelMobile" : "panel"} >
+            <h3 className='compra'>
+              Compra
+            </h3>
+            <p className="despesa"> Despesas </p>
+            <p className="gastos">
+              Entrada: {formatNumber(entrada, 'currency')} <br />
+              Financiamento: {formatNumber(valorImovel-entrada, 'currency')} <br />
+              Juros: {formatNumber(encargosAcumulado, 'currency')} <br />
+              Parcela média do financiamento: {formatNumber(valorParcela, 'currency')} <br />
+            </p>
+            <p className="despesa"> Patrimônio </p>
+            <p className="gastos">
+              Imóvel: {formatNumber(resultadoCompra, 'currency')} <br />
+            </p>
+            </div>
+            <div className={isMobile ? "panelMobile" : "panel"} >
+            <h3 className='aluguel'>
+              Aluguel
+            </h3>
+            <p className="despesa"> Despesas </p>
+            <p className="gastos">
+              Aluguel: {formatNumber(aluguelAcumulado, 'currency')} <br />
+              Valor médio do aluguel: {formatNumber(aluguelAcumulado/tempoInvest/12, 'currency')} ({formatNumber(aluguelAcumulado*100/tempoInvest/valorImovel, 'percentage')})<br />
+              Investimento inicial: {formatNumber(entrada, 'currency')} <br />
+              Investimento adicional mensal: {formatNumber(valorParcela-aluguelAcumulado/tempoInvest/12, 'currency')}
 
-            Aluguel para igualar: {}
-          </p>
-          <p className="despesa"> Patrimônio </p>
-          <p className="gastos">
-            Investimento: {formatNumber(resultadoInvEntrada, 'currency')} <br />
-          </p>
-
+            </p>
+            <p className="despesa"> Patrimônio </p>
+            <p className="gastos">
+              Investimentos: {formatNumber(resultadoAluguel, 'currency')} <br />
+            </p>
           </div>
-        </CardContent>
+        </div>
       </Card>
       <Card>
         {generateChart(inflacaoSeries, isMobile)}

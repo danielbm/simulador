@@ -20,18 +20,29 @@
   margin: auto;
 }
 
-.gastos {
-  text-align: left;
-  /* border-bottom-width: 1px;
-  border-bottom-style: solid;
-  margin: 0; */
-}
 
 .despesa {
   text-align: left;
+  font-weight: bold;
 }
 
-.total {
+.summaryContainer {
   text-align: left;
-  margin: 0;
+  padding: 20px;
+}
+
+.compra {
+  color: #20B1DF;
+}
+
+.aluguel {
+  color: #DF4E20;
+}
+
+.red {
+  font-weight: bold;
+}
+
+.green {
+  font-weight: bold;
 }
