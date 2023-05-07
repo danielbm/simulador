@@ -97,7 +97,8 @@ const calculateResults = (valorImovel, valorAluguel, inflacao, selic, valorizaca
   let saldoDevedor = valorImovel-entrada
   let encargos = saldoDevedor*sfh
   let encargosAcumulado = encargos
-  let inv = entrada*(1+selic*ir)
+  let inv = entrada*Math.pow((1+selic*ir), tempo)
+  let invAluguel = 0
   let aluguelAcumulado = 0
   for (let t = 1; t <= tempoInvest; t++) {
     if (saldoDevedor > 0) {
@@ -111,8 +112,13 @@ const calculateResults = (valorImovel, valorAluguel, inflacao, selic, valorizaca
     
     encargosAcumulado += encargos
     aluguel = aluguel*(1+valorizacao)
-    inv = inv*(1+selic*ir)-aluguel
-    inv += (parcelaDevedor+encargos)
+    // inv = inv*(1+selic*ir)-aluguel
+    // inv += (parcelaDevedor+encargos)
+
+    invAluguel = invAluguel - aluguel + parcelaDevedor+encargos
+    if (invAluguel > 0) {
+      invAluguel = invAluguel*(1+selic*ir)
+    }
     aluguelAcumulado += aluguel
     // console.log('Saldo devedor:'+saldoDevedor+' Parcela:'+(parcelaDevedor+encargos)+' Invest:'+inv)
   }
@@ -121,8 +127,10 @@ const calculateResults = (valorImovel, valorAluguel, inflacao, selic, valorizaca
     resultadoCompra: vi.toFixed(2),
     encargosAcumulado: encargosAcumulado,
     valorParcela: tempo > 0 ? (encargosAcumulado+valorImovel-entrada)/tempo/12 : 0,
-    resultadoAluguel: (inv).toFixed(2),
+    resultadoAluguel: (inv+invAluguel).toFixed(2),
     aluguelAcumulado: aluguelAcumulado,
+    desvalorização: (vi-valorImovel).toFixed(2),
+    investimentoEntrada: (inv).toFixed(2),
   }
 }
 
@@ -181,10 +189,10 @@ function ResultsComponent(props) {
   tempo = Number(tempo)
   entrada = Number(entrada)
   sfh = Number(sfh)/100
-  let tempoInvest = 20
+  let tempoInvest = tempo
   // console.log(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, investimento)
 
-  const { resultadoCompra, encargosAcumulado, valorParcela, resultadoAluguel, aluguelAcumulado } = calculateResults(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo,  entrada, sfh, tempoInvest)
+  const { resultadoCompra, encargosAcumulado, valorParcela, resultadoAluguel, aluguelAcumulado, desvalorização, investimentoEntrada } = calculateResults(valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo,  entrada, sfh, tempoInvest)
 
   let inflacaoData = [[],[],[]]
   let jurosData = [[],[],[]]
@@ -241,13 +249,14 @@ function ResultsComponent(props) {
             Nestas condições de financiamento, para adquirir este imóvel em {tempo} anos, é necessário 
             investir <span className='red'>{formatNumber(encargosAcumulado+valorImovel, 'currency')}</span>, ou <span className='red'>{formatNumber(valorParcela, 'currency')}</span> por 
             mês. Ao final de {tempoInvest} anos 
-            seu patrimônio total seria de <span className='green'>{formatNumber(resultadoCompra, 'currency')}</span>, já considerando a
-            valorização do imóvel e a inflação.
+            seu patrimônio total seria de <span className='green'>{formatNumber(resultadoCompra, 'currency')}</span>, tendo em vista a valorização 
+            de <span className='red'>{formatNumber(desvalorização, 'currency')}</span> do imóvel, considerando a inflação.
           </p>
           <p>
-            Se o mesmo imóvel fosse alugado por <span className='red'>{formatNumber(valorAluguel, 'currency')}</span>, e o restante do
-            dinheiro fosse investido rendendo a taxa SELIC, ao final de {tempoInvest} anos, seu patrimônio
-            total seria de <span className='green'>{formatNumber(resultadoAluguel, 'currency')}</span>.
+            Se o mesmo imóvel fosse alugado por <span className='red'>{formatNumber(valorAluguel, 'currency')}</span>, 
+            o investimento da entrada teria rendido <span className='green'>{formatNumber(investimentoEntrada, 'currency')}</span>, a 
+            diferença entre a parcela e o aluguel teria rendido <span className='green'>{formatNumber(resultadoAluguel-investimentoEntrada, 'currency')}</span>, e 
+            ao final de {tempoInvest} anos, seu patrimônio total seria de <span className='green'>{formatNumber(resultadoAluguel, 'currency')}</span>.
           </p>
         </div>
         </Card>
@@ -264,7 +273,7 @@ function ResultsComponent(props) {
               Juros: {formatNumber(encargosAcumulado, 'currency')} <br />
               Parcela média do financiamento: {formatNumber(valorParcela, 'currency')} <br />
             </p>
-            <p className="despesa"> Patrimônio </p>
+            <p className="despesa"> Patrimônio após {tempoInvest} anos </p>
             <p className="gastos">
               Imóvel: {formatNumber(resultadoCompra, 'currency')} <br />
             </p>
@@ -281,7 +290,7 @@ function ResultsComponent(props) {
               Investimento adicional mensal: {formatNumber(valorParcela-aluguelAcumulado/tempoInvest/12, 'currency')}
 
             </p>
-            <p className="despesa"> Patrimônio </p>
+            <p className="despesa"> Patrimônio após {tempoInvest} anos </p>
             <p className="gastos">
               Investimentos: {formatNumber(resultadoAluguel, 'currency')} <br />
             </p>

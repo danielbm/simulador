@@ -12,14 +12,14 @@ function App() {
   const formik = useFormik({
     initialValues: {
       valorImovel: 500000,
-      valorAluguel: 2000,
-      inflacao: 4,
-      selic: 7,
-      valorizacao: 4,
+      valorAluguel: 1800,
+      inflacao: 6.1,
+      selic: 12.25,
+      valorizacao: 7.1,
       tempo: 15,
       itbi: 0.,
       entrada: 200000,
-      sfh: 7
+      sfh: 13.25
     },
     onSubmit: values => {
 
@@ -30,6 +30,15 @@ function App() {
         errors.valorImovel = 'Campo obrigatório';
       } else if (!values.tempo) {
         errors.tempo = 'Campo obrigatório';
+      }
+      for (let name in values) {
+        if (isNaN(values[name])) {
+          if (values[name].includes(',')) {
+            errors[name] = 'Use ponto ao invés de vírgula'
+          } else {
+            errors[name] = 'Formato numérico incorreto'
+          }
+        }
       }
       return errors;
     }
@@ -53,9 +62,9 @@ function App() {
             Observações:
             <ol>
               <li> Reajuste do aluguel na proporção da valorização do imóvel </li>
-              <li> A diferença entre o valor da parcela do financiamento e o valor do aluguel é investido mensalmente </li>
+              <li> A diferença entre o valor da parcela do financiamento e o valor do aluguel, quando positiva, é investida mensalmente </li>
               <li> Investimentos rendem a taxa SELIC, com incidência de imposto de renda de 15% sobre os rendimentos </li>
-              <li> Valores padrão baseados na Estrutura a Termo das Taxas de Juros Estimada para 10 anos ( https://www.anbima.com.br/pt_br/informar/curvas-de-juros-fechamento.htm ) </li>
+              <li> Valores padrão baseados na Estrutura a Termo das Taxas de Juros Estimada para 10 anos no dia 06/05/23 ( https://www.anbima.com.br/pt_br/informar/curvas-de-juros-fechamento.htm ) </li>
               <li> Todos valores deflacionados para a moeda de hoje </li>
               <li> Valores de condomínio e IPTU não são considerados pois assume-se que serão repassados para o locatário, e, portanto, incidem igualmente nas duas opções. </li>
               <li> Financiamento pelo Sistema de Amortização Constante - SAC </li>
@@ -64,7 +73,7 @@ function App() {
         </Card>
       </div>
       <div className="footer">
-        <p> Dúvidas, sugestões e contribuições em: <a href="https://github.com/danielbm/simulador">https://github.com/danielbm/simulador</a> </p>
+        <p> Dúvidas, sugestões e contribuições em: <a href="https://github.com/danielbm/simulador">https://github.com/danielbm/simulador</a> e <a href="https://twitter.com/danielbrasilm1">https://twitter.com/danielbrasilm1</a> </p>
       </div>
     </div>
   );

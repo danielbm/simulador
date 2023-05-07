@@ -1,11 +1,7 @@
 import React  from "react";
 import { TextField, Card, CardContent, InputAdornment } from '@material-ui/core'
-// import PulseLoader from 'react-spinners/PulseLoader'
 import {DebounceInput} from 'react-debounce-input'
 import './InputPanelComponentStyle.css'
-// import { truncate } from '../Helpers/Util.js'
-// import axios from 'axios'
-// import convert from 'xml-js'
 
 const generateTextField = (startAdornment, endAdornment, label, name, formik) => {
   return (
@@ -19,6 +15,8 @@ const generateTextField = (startAdornment, endAdornment, label, name, formik) =>
         debounceTimeout: 1000
       }}
       className="textField" label={label} type="text" name={name} value={formik.values[name]} onChange={formik.handleChange}
+      helperText={formik.errors[name]}
+      error={formik.errors[name] ? true : false}
       margin="normal"
     />
   )
