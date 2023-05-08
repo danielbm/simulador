@@ -3,11 +3,13 @@
 .chart {
   width: 50%;
   float: left;
+  color-scheme: only light;
 }
 
 .chartMobile {
   width: 100%;
   margin: auto;
+  color-scheme: only light;
 }
 
 .panel {

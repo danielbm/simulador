@@ -31,13 +31,6 @@ const generateOptions = (title, line1, line2, xname, data1, data2, categories, r
       stroke: {
         curve: 'smooth'
       },
-      grid: {
-        borderColor: '#e7e7e7',
-        row: {
-          colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-          opacity: 0.5
-        },
-      },
       markers: {
         size: 0
       },
@@ -63,11 +56,17 @@ const generateOptions = (title, line1, line2, xname, data1, data2, categories, r
         },
         labels: {
           formatter: (value) => { return formatNumber(value, "currency").slice(0,-3) },
-        }
+        },
+        min: 0,
+        forceNiceScale: true
       },
       legend: {
         position: 'top',
         horizontalAlign: 'right',
+      },
+      theme: {
+        mode: 'light', 
+        palette: 'palette2', 
       }
     },
     series: [
@@ -133,38 +132,6 @@ const calculateResults = (valorImovel, valorAluguel, inflacao, selic, valorizaca
     investimentoEntrada: (inv).toFixed(2),
   }
 }
-
-// const calculateAluguel = (valorImovel, valorAluguel, inflacao, selic, valorizacao, tempo, entrada, sfh) => {
-//   selic = (1+selic)/(1+inflacao)-1
-//   valorizacao = (1+valorizacao)/(1+inflacao)-1
-//   sfh = (1+sfh)/(1+inflacao)-1
-
-//   let tempoInvest = 20
-
-
-//   let ir = 0.85
-//   let aluguel = valorAluguel*12
-//   let parcelaDevedor = (valorImovel-entrada)/tempo
-//   let saldoDevedor = valorImovel-entrada-parcelaDevedor
-//   let encargos = saldoDevedor*sfh
-//   let inv = entrada*(1+selic*ir)-aluguel+parcelaDevedor+encargos
-//   let inv2 = 0
-//   let aluguelAcumulado = aluguel
-//   for (let t = 1; t <= tempoInvest; t++) {
-//     saldoDevedor = saldoDevedor > 0 ? saldoDevedor - parcelaDevedor : 0
-//     encargos = saldoDevedor*sfh
-//     aluguel = aluguel*(1+valorizacao)
-//     inv = inv*(1+selic*ir)-aluguel+parcelaDevedor+encargos
-//     inv2 = inv2*(1+selic*ir)
-//     aluguelAcumulado += aluguel
-//   }
-//   return {
-//     resultadoAluguel: (inv+inv2).toFixed(2),
-//     aluguelAcumulado: aluguelAcumulado,
-//     resultadoInvEntrada: inv.toFixed(2),
-//     resultadoInvSaldo: inv2.toFixed(2)
-//   }
-// }
 
 const generateChart = (series, isMobile) => {
   return (
