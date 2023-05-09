@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.6.0",
-    "apexcharts": "^3.10.0",
+    "apexcharts": "^3.24.0",
     "axios": "^0.19.2",
     "formik": "^2.0.3",
     "react": "^16.11.0",
