@@ -19,7 +19,8 @@ function App() {
       tempo: 15,
       itbi: 0.,
       entrada: 200000,
-      sfh: 13.25
+      sfh: 13.25,
+      isMortgage: false
     },
     onSubmit: values => {
 
@@ -68,12 +69,15 @@ function App() {
               <li> Todos valores deflacionados para a moeda de hoje </li>
               <li> Valores de condomínio e IPTU não são considerados pois assume-se que serão repassados para o locatário, e, portanto, incidem igualmente nas duas opções. </li>
               <li> Financiamento pelo Sistema de Amortização Constante - SAC </li>
+              <li> ITBI 3% e custas cartorárias 1% do valor do imóvel </li>
+
             </ol>
           </CardContent>
         </Card>
       </div>
       <div className="footer">
         <p> Dúvidas, sugestões e contribuições em: <a href="https://github.com/danielbm/simulador">https://github.com/danielbm/simulador</a> e <a href="https://twitter.com/danielbrasilm1">https://twitter.com/danielbrasilm1</a> </p>
+        <p> Conheça também a ferramenta de análise da inflação: <a href="https://www.considereainflacao.com.br">https://www.considereainflacao.com.br</a> </p>
       </div>
     </div>
   );

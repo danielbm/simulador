@@ -1,16 +1,28 @@
 
 .inputContainer {
   display: flex;
-  flex-wrap:  wrap;
-  justify-content: space-around;
+  align-items: flex-start;
 }
 
-.buttonsContainer {
-  display: flex;
-  flex-wrap:  wrap;
-  justify-content: space-around;
+.wrap {
   flex-direction: column;
+}
+
+.inputColumn {
+  flex: 1;
+  text-align: left;
   margin-left: 60px;
-  margin-right: 60px;
+}
+
+.withMargin {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+.buttonsContainer {
+  text-align: left;
+  margin-left: 60px;
+  margin-top: 16px;
 }
 

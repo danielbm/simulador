@@ -1,9 +1,10 @@
 import React  from "react";
-import { TextField, Card, CardContent, InputAdornment } from '@material-ui/core'
+import { TextField, Card, CardContent, InputAdornment, Switch } from '@material-ui/core'
 import {DebounceInput} from 'react-debounce-input'
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import './InputPanelComponentStyle.css'
 
-const generateTextField = (startAdornment, endAdornment, label, name, formik) => {
+const generateTextField = (startAdornment, endAdornment, label, name, formik, disabled) => {
   return (
     <TextField
       InputProps={{
@@ -18,100 +19,47 @@ const generateTextField = (startAdornment, endAdornment, label, name, formik) =>
       helperText={formik.errors[name]}
       error={formik.errors[name] ? true : false}
       margin="normal"
+      disabled={disabled}
     />
   )
 }
 
 
 function InputPanelComponent(props) {
-  // const isMobile = useMediaQuery('(max-width:600px)');
-  // const [ettj, setEttj] = useState(null)
-
+  const isMobile = useMediaQuery('(max-width:600px)');
+  // const [ isMortgage, setIsMortgage ] = useState(true)
 
   const { formik } = props
-
-  // const toggleMortage = (toggle) => {
-  //   formik.setFieldValue("entrada", formik.values.valorImovel)
-  //   formik.setFieldValue("tempo", 0)
-  // }
-
-  // const toggleDefault = (toggle) => {
-  //   formik.setFieldValue("inflacao", ettj[0])
-  //   formik.setFieldValue("selic", ettj[1])
-  //   formik.setFieldValue("sfh", truncate(ettj[1]+2))
-  //   formik.setFieldValue("valorizacao", ettj[0])
-  //   formik.setFieldValue("entrada", formik.values.valorImovel)
-  //   formik.setFieldValue("tempo", 15)
-  // }
-
-  // useEffect(() => {
-  //   axios({
-  //     method: 'post',
-  //     url: 'https://cors-anywhere.herokuapp.com/https://www.anbima.com.br/informacoes/est-termo/CZ-down.asp',
-  //     data: 'escolha=2&Idioma=PT&saida=xml&Dt_Ref=16/06/2020',
-  //     headers: {
-  //       'Content-Type': 'application/x-www-form-urlencoded'
-  //     }
-  //   }).then(function (response) {
-  //     const json = convert.xml2js(response.data, {compact: true})
-  //     let ettjInflacao = formik.values.inflacao
-  //     let ettjJuros = formik.values.selic
-  //     if ("ETTJ" in json["CURVAZERO"]) {
-  //       const tenEttj = json["CURVAZERO"]["ETTJ"]["VERTICES"][19]["_attributes"]
-  //       ettjInflacao = truncate(Number(tenEttj["Inflacao"].replace(",",".")))
-  //       ettjJuros = truncate(Number(tenEttj["Prefixados"].replace(",",".")))
-  //     }
-  //     setEttj([ettjInflacao, ettjJuros])
-  //     formik.setFieldValue("inflacao", ettjInflacao)
-  //     formik.setFieldValue("selic", ettjJuros)
-  //     formik.setFieldValue("sfh", truncate(ettjJuros+2))
-  //     formik.setFieldValue("valorizacao", ettjInflacao)
-  //   }).catch(function (error) {
-  //     setEttj([formik.values.inflacao, formik.values.selic])
-  //   });
-  // }, []);
 
   return (
     <Card>
       <CardContent>
         <form onSubmit={formik.handleSubmit}>
           <p> Parâmetros </p>
-          <div className="inputContainer">
-            {generateTextField("R$", null, "Valor do Imóvel", "valorImovel", formik)}
-            {generateTextField("R$", null, "Valor do Aluguel (mensal)", "valorAluguel", formik)}
+          <div className={`inputContainer ${isMobile ? 'wrap' : ''}`}>
+            <div className={`inputColumn ${isMobile ? 'withMargin' : ''}`}>
+              {generateTextField("R$", null, "Valor do Imóvel", "valorImovel", formik, false)}
+              {generateTextField(null, "% a.a", "Inflação", "inflacao", formik, false)}
+              {generateTextField(null, "% a.a", "Valorização do imóvel", "valorizacao", formik, false)}
+              {generateTextField(null, "anos", "Tempo de investimento", "tempo", formik, false)}
+            </div>
+            <div className={`inputColumn ${isMobile ? 'withMargin' : ''}`}>
+              {generateTextField("R$", null, "Valor do Aluguel (mensal)", "valorAluguel", formik, false)}
+              {generateTextField(null, "% a.a", "Taxa SELIC", "selic", formik, false)}
+              {generateTextField("R$", null, "Entrada", "entrada", formik, formik.values.isMortgage)}
+              {generateTextField(null, "% a.a", "Juros do financiamento", "sfh", formik, formik.values.isMortgage)}
+            </div>
           </div>
-          <div className="inputContainer">
-            {generateTextField(null, "% a.a", "Taxa SELIC", "selic", formik)}
-            {generateTextField("R$", null, "Entrada", "entrada", formik)}
-          </div>
-          {/* { ettj ? ( */}
-          <div className="inputContainer">
-            {generateTextField(null, "% a.a", "Inflação", "inflacao", formik)}
-            {generateTextField(null, "anos", "Tempo de financiamento", "tempo", formik)}
-          </div>
-          {/* ) : <PulseLoader />} */}
-          {/* { ettj ? ( */}
-          <div className="inputContainer">
-            {generateTextField(null, "% a.a", "Valorização do imóvel", "valorizacao", formik)}
-            {generateTextField(null, "% a.a", "Juros do financiamento", "sfh", formik)}
-          </div>
-        {/* ) : null} */}
-          {/* <div className="buttonsContainer">
-            <Button
-              onClick={() => toggleMortage()}
+          <div className={`buttonsContainer ${isMobile ? 'withMargin' : ''}`}>
+            <Switch
+              onClick={formik.handleChange}
+              value={formik.values.isMortgage}
+              name="isMortgage"
               size="small"
-              color="secondary"
+              color="primary"
               variant="outlined"
-              className="button"
-            > Sem financiamento </Button>
-            <Button
-              onClick={() => toggleDefault()}
-              size="small"
-              color="secondary"
-              variant="outlined"
-              mt={10}
-            > Resetar condições </Button>
-          </div> */}
+            /> Sem financiamento
+          </div>
         </form>
       </CardContent>
     </Card>
