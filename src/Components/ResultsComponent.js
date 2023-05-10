@@ -114,18 +114,29 @@ function ResultsComponent(props) {
       <Card>
         <div className="summaryContainer">
           <h2> A melhor opção é <span className={resultadoAluguel > resultadoCompra ? "aluguel": "compra"}>{resultadoAluguel > resultadoCompra ? "alugar": "comprar"}</span></h2>
-          <p>
+          {!isMortgage ? (<p>
             Nestas condições de financiamento, para adquirir este imóvel em {tempo} anos, é necessário 
             investir <span className='red'>{formatNumber(encargosAcumulado+valorImovel, 'currency')}</span>, ou <span className='red'>{formatNumber(valorParcela, 'currency')}</span> por 
             mês. Ao final de {tempoInvest} anos, tendo em vista a valorização de <span className='red'>{formatNumber(desvalorização, 'currency')}</span> do 
             imóvel, e considerando a inflação, seu patrimônio total seria de <span className='green'>{formatNumber(resultadoCompra, 'currency')}</span>.
-          </p>
-          <p>
+          </p>)
+          : (<p>
+            Adquirindo o imóvel à vista por <span className='red'>{formatNumber(valorImovel, 'currency')}</span>, ao
+            final de {tempoInvest} anos, tendo em vista a valorização de <span className='red'>{formatNumber(desvalorização, 'currency')}</span> do 
+            imóvel, e considerando a inflação, seu patrimônio total seria de <span className='green'>{formatNumber(resultadoCompra, 'currency')}</span>.
+          </p>)}
+          {!isMortgage ? (<p>
             Se o mesmo imóvel fosse alugado por <span className='red'>{formatNumber(valorAluguel, 'currency')}</span>, 
             o investimento da entrada teria rendido <span className='green'>{formatNumber(investimentoEntrada, 'currency')}</span>, a 
             diferença entre a parcela e o aluguel teria rendido <span className='green'>{formatNumber(resultadoAluguel-investimentoEntrada, 'currency')}</span>, e 
             ao final de {tempoInvest} anos, seu patrimônio total seria de <span className='green'>{formatNumber(resultadoAluguel, 'currency')}</span>.
-          </p>
+          </p>)
+          : (<p>
+            Se o mesmo imóvel fosse alugado por <span className='red'>{formatNumber(valorAluguel, 'currency')}</span>, 
+            o investimento da entrada teria rendido <span className='green'>{formatNumber(investimentoEntrada, 'currency')}</span>, o
+            aluguel teria custado <span className='green'>{formatNumber(-(resultadoAluguel-investimentoEntrada), 'currency')}</span>, e 
+            ao final de {tempoInvest} anos, seu patrimônio total seria de <span className='green'>{formatNumber(resultadoAluguel, 'currency')}</span>.
+          </p>)}
         </div>
         </Card>
         <Card>

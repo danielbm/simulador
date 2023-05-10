@@ -58,7 +58,7 @@ function InputPanelComponent(props) {
               size="small"
               color="primary"
               variant="outlined"
-            /> Sem financiamento
+            /> Compra à vista
           </div>
         </form>
       </CardContent>
