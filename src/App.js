@@ -20,7 +20,8 @@ function App() {
       itbi: 0.,
       entrada: 200000,
       sfh: 13.25,
-      isMortgage: false
+      isMortgage: false,
+      isSelling: false
     },
     onSubmit: values => {
 

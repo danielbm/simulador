@@ -60,6 +60,16 @@ function InputPanelComponent(props) {
               variant="outlined"
             /> Compra à vista
           </div>
+          <div className={`buttonsContainer ${isMobile ? 'withMargin' : ''}`}>
+            <Switch
+              onClick={formik.handleChange}
+              value={formik.values.isSelling}
+              name="isSelling"
+              size="small"
+              color="primary"
+              variant="outlined"
+            /> Já tenho o imóvel e quero vender/alugar
+          </div>
         </form>
       </CardContent>
     </Card>
